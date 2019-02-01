@@ -35,6 +35,9 @@ sudo mount /dev/sdb1 /mnt
 
 wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
 sudo bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C /mnt
+sudo wget http://os.archlinuxarm.org/os/rockchip/boot/rock64/boot.scr -O /mnt/boot/boot.scr
+
+sudo umount /mnt
 wget http://os.archlinuxarm.org/os/rockchip/boot/rock64/idbloader.img
 wget http://os.archlinuxarm.org/os/rockchip/boot/rock64/uboot.img
 wget http://os.archlinuxarm.org/os/rockchip/boot/rock64/trust.img
@@ -42,9 +45,41 @@ sudo dd if=idbloader.img of=/dev/sdb seek=64 conv=notrunc
 sudo dd if=uboot.img of=/dev/sdb seek=16384 conv=notrunc
 sudo dd if=trust.img of=/dev/sdb seek=24576 conv=notrunc
 
-```
+
+sudo dd if=idbloader.img of=/dev/mmcblk0p1 seek=64 conv=notrunc
+sudo dd if=uboot.img of=/dev/mmcblk0p1 seek=16384 conv=notrunc
+sudo dd if=trust.img of=/dev/mmcblk0p1 seek=24576 conv=notrunc
+
+
+TARGET_DEVICE="/dev/sda"
+SUDO=""
+$sudo dd if=idbloader.img of=$TARGET_DEVICE seek=64 conv=notrunc
+$sudo dd if=uboot.img of=$TARGET_DEVICE seek=16384 conv=notrunc
+$sudo dd if=trust.img of=$TARGET_DEVICE seek=24576 conv=notrunc
+
+
 ```
 
 ## boot from sdcard or disk if epi boot active 
 
 
+## lofin into
+
+```bash
+alarm/alarm
+root/root
+```
+
+## install pacman
+
+```bash
+pacman-key --init
+pacman-key --populate archlinuxarm
+pacman -Syu  
+```
+## update u-boot
+
+```bash
+rm /boot/boot.scr
+pacman -Sy uboot-rock64
+```
